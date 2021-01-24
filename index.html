@@ -1,104 +1,182 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Rock Paper Scissors</title>
 </head>
+
 <body>
-    <h1>Rock Paper Scissors</h1>
+  <h1>Rock Paper Scissors</h1>
+  <div id="buttons">
+    <h2>BUTTONS</h2>
+    <button id="btnnewgame">New Game</button>
+    <br>
+    <br>
+    <button id="btnrock">Rock</button>
+    <button id="btnpaper">Paper</button>
+    <button id="btnscissors">Scissors</button>
+
+
+  </div>
+
+  <div id="results">
+
+
+  </div>
 
   <script>
-      let keepPlaying = true;
-      let playerScore = 0.0;
-      let computerScore = 0.0;
+    let playerScore = 0.0;
+    let computerScore = 0.0;
+    let gameActive = false;
+    let message = "";
+
+    const container = document.querySelector('#results');
+    const heading = document.createElement('h2');
+    const result = document.createElement('h3');
+    const score = document.createElement('h3');
+    const instruction = document.createElement('h3');
+
+
+    heading.textContent = "RESULTS";
+    result.textContent = "Awaiting results...";
+    score.textContent = "The score at the moment is " + playerScore + " (player) to " + computerScore + " (computer).";
+    instruction.textContent = "Start a new game!";
+
+    container.appendChild(heading);
+    container.appendChild(result);
+    container.appendChild(score);
+    container.appendChild(instruction);
+
+
+
+
+    const buttons = document.querySelectorAll('button');
+
+
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.id == "btnnewgame") {
+          game();
+
+        } else {
+          if (gameActive == true) {
+            if (button.id == "btnrock") {
+              message = playRound("rock", computerPlay());
+            }
+            if (button.id == "btnpaper") {
+              message = playRound("paper", computerPlay());
+            }
+            if (button.id == "btnscissors") {
+              message = playRound("scissors", computerPlay());
+            }
+            updateText();
+          }
+          else {
+            alert("Please start a new game first before choosing an option.");
+          }
+        }
+
+      });
+
+    });
 
     function computerPlay() {
-        let rng = Math.floor(Math.random() * 3);
-        let computerSelection = "";
-        if (rng == 0) {
-            computerSelection = "rock";
-        } else if (rng == 1) {
-            computerSelection = "paper";
-        } else {
-           computerSelection = "scissors";
-        }   
-        return computerSelection;
+      let rng = Math.floor(Math.random() * 3);
+      let computerSelection = "";
+      if (rng == 0) {
+        computerSelection = "rock";
+      } else if (rng == 1) {
+        computerSelection = "paper";
+      } else {
+        computerSelection = "scissors";
+      }
+      return computerSelection;
     }
-    
-    function humanPlay() {
-       let playerSelection = window.prompt("Do you choose rock, paper or scissors?");
-       playerSelection = playerSelection.toLowerCase();
-       if (!(playerSelection == "rock" || playerSelection == "paper" || playerSelection == "scissors")) {
-          console.log("That's not a valid option. Please play again.");
-          humanPlay();
-       }
-       return playerSelection;
-    }
+
     function playRound(playerSelection, computerSelection) {
       if (playerSelection == "rock" && computerSelection == "rock") {
-          playerScore = playerScore + 0.5;
-          computerScore = computerScore +0.5;
-          return "Draw! Rock vs rock.";
-      } 
-      
+        playerScore = playerScore + 0.5;
+        computerScore = computerScore + 0.5;
+        return "Draw! Rock vs rock.";
+      }
+
       else if (playerSelection == "rock" && computerSelection == "paper") {
-          computerScore++;
-          return "You lose! Paper beats rock.";
-      } 
-      
+        computerScore++;
+        return "You lose! Paper beats rock.";
+      }
+
       else if (playerSelection == "rock" && computerSelection == "scissors") {
-          playerScore++;
-          return "You win! Rock beats scissors.";
-      } 
-      
+        playerScore++;
+        return "You win! Rock beats scissors.";
+      }
+
       else if (playerSelection == "scissors" && computerSelection == "scissors") {
-          playerScore = playerScore + 0.5;
-          computerScore = computerScore +0.5;
-          return "Draw! Scissors vs scissors.";
-      } 
-      
+        playerScore = playerScore + 0.5;
+        computerScore = computerScore + 0.5;
+        return "Draw! Scissors vs scissors.";
+      }
+
       else if (playerSelection == "scissors" && computerSelection == "paper") {
-          playerScore++;
-          return "You win! Scissors beats paper.";
-      } 
-      
+        playerScore++;
+        return "You win! Scissors beats paper.";
+      }
+
       else if (playerSelection == "scissors" && computerSelection == "rock") {
-           computerScore++;
-          return "You lose! Rock beats scissors.";
-      } 
-      
+        computerScore++;
+        return "You lose! Rock beats scissors.";
+      }
+
       else if (playerSelection == "paper" && computerSelection == "paper") {
-          playerScore = playerScore + 0.5;
-          computerScore = computerScore +0.5;
-          return "Draw! Paper vs paper.";
-      } 
-      
+        playerScore = playerScore + 0.5;
+        computerScore = computerScore + 0.5;
+        return "Draw! Paper vs paper.";
+      }
+
       else if (playerSelection == "paper" && computerSelection == "scissors") {
-          computerScore++;
-          return "You lose! Scissors beats paper.";
-      } 
-      
+        computerScore++;
+        return "You lose! Scissors beats paper.";
+      }
+
       else if (playerSelection == "paper" && computerSelection == "rock") {
-          playerScore++;
-          return "You win! Paper beats rock.";
-      } 
-      
+        playerScore++;
+        return "You win! Paper beats rock.";
+      }
+
       else {
         return "ERROR!!!";
       }
     }
 
-    function game() {
-      alert(playRound(humanPlay(), computerPlay()));
-      let input = window.prompt("The score is " + playerScore + " to " + computerScore + ". Would you like to play a new round? (y)es, (n)o");
-      if (input == "y" || input == "Y") {
-        game();
+    function updateText() {
+      result.textContent = message;
+      score.textContent = "The score at the moment is " + playerScore + " (player) to " + computerScore + " (computer).";
+      if (computerScore >= 5) {
+        instruction.textContent = "You lost! Do you want to start a new game?";
+        gameActive = false;
+      } else if (playerScore >= 5) {
+        instruction.textContent = "You won! Do you want to start a new game?";
+        gameActive = false;
       } else {
-        alert("Goodbye! Thanks for playing!");
+        instruction.textContent = "Choose rock, paper or scissors for the next round.";
       }
     }
 
-    game();
+
+
+    function game() {
+      gameActive = true;
+      computerScore = 0;
+      playerScore = 0;
+      heading.textContent = "RESULTS";
+      result.textContent = "Awaiting results...";
+      score.textContent = "The score at the moment is " + playerScore + " (player) to " + computerScore + " (computer).";
+      instruction.textContent = "Start a new game!";
+    }
+
+
   </script>
 </body>
+
 </html>
